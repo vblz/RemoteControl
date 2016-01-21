@@ -50,11 +50,13 @@ func apiServeRequest(
 	if err != nil {
 		sec = 0
 	}
-	abort()
 	if sec != 0 {
+		abort()
 		start(sec)
+		fmt.Fprint(w, sec)
+	} else {
+		http.Error(w, http.StatusText(500), 500)
 	}
-	fmt.Fprint(w, sec)
 }
 
 func abort() {
