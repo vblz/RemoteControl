@@ -19,7 +19,7 @@ type Shutdown struct {
 func (sh Shutdown) GetHandlers() []interfaces.EndPointInfo {
 	handlers := []interfaces.EndPointInfo{
 		interfaces.BaseEndPointInfo{
-			"/api/v1/shutdown",
+			"/shutdown",
 			apiServeRequest,
 			interfaces.EndPointAPI},
 		interfaces.BaseEndPointInfo{
