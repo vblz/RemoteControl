@@ -104,21 +104,19 @@ const (
 func click(t int) {
 	switch t {
 	case clickTypeLeft:
-		mouseEventInfo.Call(
-			uintptr(mouseEventFLeftDown|mouseEventFLeftUp),
-			uintptr(uint(0)),
-			uintptr(uint(0)),
-			uintptr(uint(0)),
-			uintptr(uint(0)),
-		)
+		mouseEvent(mouseEventFLeftDown | mouseEventFLeftUp)
 
 	case clickTypeRight:
-		mouseEventInfo.Call(
-			uintptr(mouseEventFRightDown|mouseEventFRightUp),
-			uintptr(uint(0)),
-			uintptr(uint(0)),
-			uintptr(uint(0)),
-			uintptr(uint(0)),
-		)
+		mouseEvent(mouseEventFRightDown | mouseEventFRightUp)
 	}
+}
+
+func mouseEvent(mouseEvent uint32) {
+	mouseEventInfo.Call(
+		uintptr(mouseEvent),
+		uintptr(uint(0)),
+		uintptr(uint(0)),
+		uintptr(uint(0)),
+		uintptr(uint(0)),
+	)
 }
