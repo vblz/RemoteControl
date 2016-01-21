@@ -12,7 +12,7 @@
   <body>
     <script>
     function sh(sec) {
-      $.get(
+      $.post(
           "/api/v1/shutdown",
           {"sec" : sec},
           function(data) {

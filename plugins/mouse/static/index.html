@@ -12,7 +12,7 @@
   <body>
     <script>
     function move(x, y) {
-      $.get(
+      $.post(
           "/api/v1/mouse/move",
           {"x": x, "y": y},
           function(data) {
@@ -21,7 +21,7 @@
       );
     }
     function mClick(type) {
-      $.get(
+      $.post(
           "/api/v1/mouse/click",
           {"type": type},
           function(data) {
