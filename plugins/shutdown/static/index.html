@@ -14,7 +14,7 @@
     function sh(sec) {
       $.get(
           "/api/v1/shutdown",
-          {sec : sec},
+          {"sec" : sec},
           function(data) {
              console.log('shutdown in '+ data + ' sec');
           }
@@ -33,7 +33,7 @@
       <p>
         <button type="button" class="btn btn-lg btn-default" onclick="sh(60*60)">1 hour</button>
         <button type="button" class="btn btn-lg btn-primary" onclick="sh(40*60)">40 minutes</button>
-        <button type="button" class="btn btn-danger" onclick="sh(0)">Cancel</button>
+        <button type="button" class="btn btn-lg btn-danger" onclick="sh(0)">Cancel</button>
       </p>
     </div>
 
