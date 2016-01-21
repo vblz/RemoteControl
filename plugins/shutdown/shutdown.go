@@ -48,14 +48,12 @@ func apiServeRequest(
 
 	sec, err := strconv.Atoi(secStr)
 	if err != nil {
-		sec = 0
+		http.Error(w, http.StatusText(500), 500)
 	}
+	abort()
 	if sec != 0 {
-		abort()
 		start(sec)
 		fmt.Fprint(w, sec)
-	} else {
-		http.Error(w, http.StatusText(500), 500)
 	}
 }
 
