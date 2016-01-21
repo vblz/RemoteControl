@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mouse control</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  </head>
+  <body>
+    <script>
+    function move(x, y) {
+      $.get(
+          "/api/v1/mouse/move",
+          {"x": x, "y": y},
+          function(data) {
+             console.log('mouse move send success, currentPos: ' + data);
+          }
+      );
+    }
+    function mClick(type) {
+      $.get(
+          "/api/v1/mouse/click",
+          {"type": type},
+          function(data) {
+             console.log('mouse click send success');
+          }
+      );
+    }
+    </script>
+    <div class="container theme-showcase" role="main">
+      <div class="jumbotron">
+        <h1>Control your desktop's mouse</h1>
+        <p>Temp text.</p>
+      </div>
+
+      <div class="page-header">
+        <h1>Move mouse</h1>
+      </div>
+      <p>
+        <button type="button" class="btn btn-lg btn-default" onclick="move(0, -20)">Up</button>
+        <button type="button" class="btn btn-lg btn-default" onclick="move(0, 20)">Down</button>
+        <button type="button" class="btn btn-lg btn-default" onclick="move(-20, 0)">Left</button>
+        <button type="button" class="btn btn-lg btn-default" onclick="move(20, 0)">Right</button>
+      </p>
+      <p>
+        <button type="button" class="btn btn-lg btn-default" onclick="mClick(0)">Left button</button>
+        <button type="button" class="btn btn-lg btn-default" onclick="mClick(1)">Right button</button>
+      </p>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  </body>
+</html>
