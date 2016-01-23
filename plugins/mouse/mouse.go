@@ -54,7 +54,7 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 func contentServeRequest(
 	w http.ResponseWriter,
 	r *http.Request) {
-	f, e := ioutil.ReadFile(".\\plugins\\mouse\\static\\index.html")
+	f, e := ioutil.ReadFile(".\\static\\plugins\\mouse\\index.html")
 	if e != nil {
 		fmt.Fprint(w, e)
 	}

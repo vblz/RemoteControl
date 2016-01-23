@@ -34,7 +34,7 @@ func (sh Shutdown) GetHandlers() []interfaces.EndPointInfo {
 func contentServeRequest(
 	w http.ResponseWriter,
 	r *http.Request) {
-	f, e := ioutil.ReadFile(".\\plugins\\shutdown\\static\\index.html")
+	f, e := ioutil.ReadFile(".\\static\\plugins\\shutdown\\index.html")
 	if e != nil {
 		fmt.Fprint(w, e)
 	}
