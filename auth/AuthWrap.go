@@ -12,7 +12,22 @@ type Wrapper struct {
 // Wrap the http.HandleFunc
 func (wrapper Wrapper) Wrap(wrapped http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//TODO add the authentification check
-		wrapped(w, r)
+		if wrapper.isOk(r) {
+			wrapped(w, r)
+		} else {
+			w.Header().Set("WWW-Authenticate", "Basic realm=\""+wrapper.Realm+"\"")
+			http.Error(w, "Unauthorized", 401)
+		}
 	}
+}
+
+func (wrapper Wrapper) isOk(r *http.Request) bool {
+	username, password, ok := r.BasicAuth()
+	if !ok {
+		return false
+	}
+	if username != wrapper.User {
+		return false
+	}
+	return password == wrapper.Password
 }
