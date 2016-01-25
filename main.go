@@ -17,6 +17,8 @@ var (
 	serverPort      uint
 	user            string
 	password        string
+	certTLSFilePath string
+	keyTLSFilePath  string
 	wrapper         auth.Wrapper
 )
 
@@ -24,7 +26,9 @@ func init() {
 	flag.StringVar(&serverAddress, "host", "0.0.0.0", "the host that server binds to")
 	flag.UintVar(&serverPort, "port", 1234, "the port that server binds to")
 	flag.StringVar(&user, "user", "user", "username for auth while using the service")
-	flag.StringVar(&password, "password", "пароль", "password for auth while using the service")
+	flag.StringVar(&password, "password", "iospassword", "password for auth while using the service")
+	flag.StringVar(&certTLSFilePath, "TLSCertPath", "", "path to cert file for use TLS")
+	flag.StringVar(&keyTLSFilePath, "TLSKeyPath", "", "path to key file for use TLS")
 }
 
 func main() {
@@ -34,7 +38,13 @@ func main() {
 }
 
 func startServer() {
-	err := http.ListenAndServe(serverAddress+":"+strconv.FormatUint(uint64(serverPort), 10), nil)
+	var err error
+	addr := serverAddress + ":" + strconv.FormatUint(uint64(serverPort), 10)
+	if certTLSFilePath == "" || keyTLSFilePath == "" {
+		err = http.ListenAndServe(addr, nil)
+	} else {
+		err = http.ListenAndServeTLS(addr, certTLSFilePath, keyTLSFilePath, nil)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
