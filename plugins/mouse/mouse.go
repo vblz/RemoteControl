@@ -3,7 +3,10 @@ package mouse
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"syscall"
 	"unsafe"
@@ -17,6 +20,25 @@ var (
 	getCursorPosInfo = user32.NewProc("GetCursorPos")
 	mouseEventInfo   = user32.NewProc("mouse_event")
 )
+
+var (
+	pageContent []byte
+)
+
+func init() {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Println("Can't load mouse static file: ", err)
+		return
+	}
+	path := dir + "\\static\\plugins\\mouse\\index.html"
+	f, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Println("Can't load mouse static file: ", err)
+		return
+	}
+	pageContent = f
+}
 
 const (
 	clickTypeLeft int = iota
@@ -54,11 +76,11 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 func contentServeRequest(
 	w http.ResponseWriter,
 	r *http.Request) {
-	f, e := ioutil.ReadFile(".\\static\\plugins\\mouse\\index.html")
-	if e != nil {
-		fmt.Fprint(w, e)
+	if pageContent != nil {
+		w.Write(pageContent)
+	} else {
+		http.NotFound(w, r)
 	}
-	w.Write(f)
 }
 
 func moveServerRequest(
