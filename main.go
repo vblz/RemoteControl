@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/vblazhnov/RemoteControl/auth"
+	"github.com/vblazhnov/go-http-digest-auth"
+
 	"github.com/vblazhnov/RemoteControl/interfaces"
 	"github.com/vblazhnov/RemoteControl/plugins/mouse"
 	"github.com/vblazhnov/RemoteControl/plugins/shutdown"
@@ -59,7 +60,7 @@ func initPlugins() {
 }
 
 func registerPlugins(plugins []interfaces.Plugin) {
-	wrapper = auth.Wrapper{user, password, serverAddress}
+	wrapper = auth.NewBaseAuth(auth.Info{user, password, serverAddress})
 	for _, p := range plugins {
 		for _, ep := range p.GetHandlers() {
 			switch ep.Type() {
