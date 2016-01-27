@@ -8,6 +8,7 @@ import (
 
 	"github.com/vblazhnov/RemoteControl/auth"
 	"github.com/vblazhnov/RemoteControl/interfaces"
+	"github.com/vblazhnov/RemoteControl/plugins/keyboard"
 	"github.com/vblazhnov/RemoteControl/plugins/mouse"
 	"github.com/vblazhnov/RemoteControl/plugins/shutdown"
 )
@@ -54,6 +55,7 @@ func initPlugins() {
 	plugins := []interfaces.Plugin{
 		shutdown.Shutdown{},
 		mouse.Control{},
+		keyboard.Control{},
 	}
 	registerPlugins(plugins)
 }
