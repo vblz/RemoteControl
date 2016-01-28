@@ -10,14 +10,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"syscall"
 
 	"github.com/vblazhnov/RemoteControl/interfaces"
-)
-
-var (
-	user32         = syscall.NewLazyDLL("user32.dll")
-	keybdEventInfo = user32.NewProc("SendInput")
 )
 
 var (
@@ -69,19 +63,7 @@ func contentServeRequest(
 	}
 }
 
-func keyServerRequest(
-	w http.ResponseWriter,
-	r *http.Request) {
-	keyStr := r.FormValue("key")
-
-	key, err := strconv.ParseUint(keyStr, 0, 32)
-	if err != nil || key > keyVolDown {
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-	go press(key)
-}
-
+// key type
 const (
 	keyUp uint64 = iota
 	keyDown
@@ -89,26 +71,18 @@ const (
 	keyRight
 	keyVolUp
 	keyVolDown
+	keySpace
 )
 
-func press(key uint64) {
-	switch key {
-	case keyUp:
-		keybdEvent(123)
-	}
-}
+func keyServerRequest(
+	w http.ResponseWriter,
+	r *http.Request) {
+	keyStr := r.FormValue("key")
 
-func keybdEvent(keyCode int32) {
-	// down := C.INPUT{_type: 1}
-	// kis := []C.INPUT{
-	// 	down,
-	// 	//{_type: C.INPUT_KEYBOARD, ki: C.KEYBDINPUT{wVk: uint16(C.VK_VOLUME_DOWN)}},
-	// 	//{_type: C.INPUT_KEYBOARD, ki: C.KEYBDINPUT{wVk: uint16(C.VK_VOLUME_DOWN), dwFlags: C.KEYEVENTF_KEYUP}},
-	// }
-	//
-	// keybdEventInfo.Call(
-	// 	uintptr(2),
-	// 	uintptr(unsafe.Pointer(&kis[0])),
-	// 	uintptr(unsafe.Sizeof(C.INPUT)),
-	// )
+	key, err := strconv.ParseUint(keyStr, 0, 32)
+	if err != nil || key > keySpace {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+	go press(key)
 }
