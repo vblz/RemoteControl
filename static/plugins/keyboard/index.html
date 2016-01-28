@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mouse control</title>
+    <title>Keyboard control</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -52,10 +52,10 @@
   </head>
   <body>
     <script>
-    function move(x, y) {
+    function push(key) {
       $.post(
-          "/api/v1/mouse/move",
-          {"x": x, "y": y},
+          "/api/v1/key",
+          {"key": key},
           function(data) {
              console.log('mouse move send success, currentPos: ' + data);
           }
@@ -72,41 +72,41 @@
         <h1>Use keys</h1>
       </div>
       <div class="row">
-        <div class="square bordered">
+        <div class="square bordered" onclick="push(5)">
           <div class="content">
               🔉
           </div>
         </div>
-        <div class="square bordered">
+        <div class="square bordered" onclick="push(0)">
           <div class="content">
             ▲
           </div>
         </div>
-        <div class="square bordered">
+        <div class="square bordered" onclick="push(4)">
           <div class="content">
             🔊
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="square bordered">
+        <div class="square bordered" onclick="push(2)">
           <div class="content">
             ◄
           </div>
         </div>
-        <div class="square bordered">
+        <div class="square bordered" onclick="push(1)">
           <div class="content">
             ▼
           </div>
         </div>
-        <div class="square bordered">
+        <div class="square bordered" onclick="push(3)">
           <div class="content">
               ►
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="bordered space">
+        <div class="bordered space" onclick="push(6)">
         </div>
       </div>
     </div>
