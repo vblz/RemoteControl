@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 
@@ -71,25 +70,13 @@ func apiServeRequest(
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 	}
+	process(sec)
+	fmt.Fprint(w, sec)
+}
+
+func process(sec int) {
 	abort()
 	if sec != 0 {
 		start(sec)
-		fmt.Fprint(w, sec)
-	}
-}
-
-func abort() {
-	run("/a")
-}
-
-func start(sec int) {
-	run("/s", "/t", strconv.Itoa(sec))
-}
-
-func run(args ...string) {
-	cmd := exec.Command("shutdown", args...)
-	err := cmd.Run()
-	if err != nil {
-		log.Println("error: " + err.Error())
 	}
 }

@@ -8,17 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"syscall"
-	"unsafe"
 
 	"github.com/vblazhnov/RemoteControl/interfaces"
-)
-
-var (
-	user32           = syscall.NewLazyDLL("user32.dll")
-	setCursorPosInfo = user32.NewProc("SetCursorPos")
-	getCursorPosInfo = user32.NewProc("GetCursorPos")
-	mouseEventInfo   = user32.NewProc("mouse_event")
 )
 
 var (
@@ -94,13 +85,10 @@ func moveServerRequest(
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-	currentPos := position{}
-	getCursorPosInfo.Call(uintptr(unsafe.Pointer(&currentPos)))
-	setCursorPosInfo.Call(
-		uintptr(currentPos.x+int32(x)),
-		uintptr(currentPos.y+int32(y)),
-	)
-	fmt.Fprint(w, currentPos.x+int32(x), currentPos.y+int32(y))
+
+	newX, newY := move(int32(x), int32(y))
+
+	fmt.Fprint(w, newX, newY)
 }
 
 func clickServerRequest(
@@ -114,31 +102,4 @@ func clickServerRequest(
 	}
 
 	click(clickType)
-}
-
-const (
-	mouseEventFLeftDown  uint32 = 0x02
-	mouseEventFLeftUp    uint32 = 0x04
-	mouseEventFRightDown uint32 = 0x08
-	mouseEventFRightUp   uint32 = 0x10
-)
-
-func click(t int) {
-	switch t {
-	case clickTypeLeft:
-		mouseEvent(mouseEventFLeftDown | mouseEventFLeftUp)
-
-	case clickTypeRight:
-		mouseEvent(mouseEventFRightDown | mouseEventFRightUp)
-	}
-}
-
-func mouseEvent(mouseEvent uint32) {
-	mouseEventInfo.Call(
-		uintptr(mouseEvent),
-		uintptr(uint(0)),
-		uintptr(uint(0)),
-		uintptr(uint(0)),
-		uintptr(uint(0)),
-	)
 }
