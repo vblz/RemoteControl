@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -54,7 +55,7 @@ func startServer() {
 
 func initPlugins() {
 	plugins := []interfaces.Plugin{
-		shutdown.Shutdown{},
+		shutdown.Control{},
 		mouse.Control{},
 		keyboard.Control{},
 	}
@@ -67,16 +68,24 @@ func registerPlugins(plugins []interfaces.Plugin) {
 		for _, ep := range p.GetHandlers() {
 			switch ep.Type() {
 			case interfaces.EndPointAPI:
-				handleFunc("/api/v1"+ep.Path(), ep.Handler())
+				handleRequest("/api/v1"+ep.Path(), ep.Handler())
 			case interfaces.EndPointContent:
-				handleFunc(ep.Path(), ep.Handler())
+				handleRequest(ep.Path(), ep.Handler())
 			default:
 				log.Println("Incorrect plugin endpoint type: ", ep)
 			}
 		}
+
+		for _, static := range p.GetMainContent() {
+			handleStatic(static.Path(), static.Data, static.Title)
+		}
 	}
 }
 
-func handleFunc(path string, fun http.HandlerFunc) {
+func handleStatic(path template.URL, data func() template.HTML, title func() string) {
+
+}
+
+func handleRequest(path string, fun http.HandlerFunc) {
 	http.HandleFunc(path, wrapper.Wrap(fun))
 }

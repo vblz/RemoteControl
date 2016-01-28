@@ -2,6 +2,7 @@ package shutdown
 
 import (
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 )
 
 var (
-	pageContent []byte
+	pageContent template.HTML
 )
 
 func init() {
@@ -28,15 +29,15 @@ func init() {
 		log.Println("Can't load shutdown static file: ", err)
 		return
 	}
-	pageContent = f
+	pageContent = template.HTML(f)
 }
 
-// Shutdown shutdown the local machine
-type Shutdown struct {
+// Control shutdown the local machine
+type Control struct {
 }
 
-// GetHandlers implemintation of interfaces.EndPointInfo
-func (sh Shutdown) GetHandlers() []interfaces.EndPointInfo {
+// GetHandlers implemintation of interfaces.Plugin
+func (c Control) GetHandlers() []interfaces.EndPointInfo {
 	handlers := []interfaces.EndPointInfo{
 		interfaces.BaseEndPointInfo{
 			"/shutdown",
@@ -51,14 +52,17 @@ func (sh Shutdown) GetHandlers() []interfaces.EndPointInfo {
 	return handlers
 }
 
-func contentServeRequest(
-	w http.ResponseWriter,
-	r *http.Request) {
-	if pageContent != nil {
-		w.Write(pageContent)
-	} else {
-		http.NotFound(w, r)
+// GetMainContent implemintation of interfaces.Plugin
+func (c Control) GetMainContent() []interfaces.StaticContent {
+	statics := []interfaces.StaticContent{
+		interfaces.BaseStaticContent{
+			"/shutdown",
+			pageContent,
+			"Shutdown",
+		},
 	}
+
+	return statics
 }
 
 func apiServeRequest(

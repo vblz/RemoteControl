@@ -53,6 +53,13 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 	return handlers
 }
 
+// GetMainContent implemintation of interfaces.Plugin
+func (c Control) GetMainContent() []interfaces.StaticContent {
+	statics := []interfaces.StaticContent{}
+
+	return statics
+}
+
 func contentServeRequest(
 	w http.ResponseWriter,
 	r *http.Request) {
