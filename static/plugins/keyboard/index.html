@@ -39,17 +39,6 @@
     text-align: center;
   }
 </style>
-<script>
-function push(key) {
-  $.post(
-      "/api/v1/key",
-      {"key": key},
-      function(data) {
-         console.log('mouse move send success, currentPos: ' + data);
-      }
-  );
-}
-</script>
 
 <div class="page-header">
   <h1>Use keys</h1>
@@ -92,3 +81,36 @@ function push(key) {
   <div class="bordered space" onclick="push(6)">
   </div>
 </div>
+<script>
+function push(key) {
+  $.post(
+      "/api/v1/key",
+      {"key": key},
+      function(data) {
+         console.log('key send succeed, data: ' + data);
+      }
+  );
+}
+(function($) {
+  $.fn.nodoubletapzoom = function(click) {
+    $(this).bind('touchstart', function preventZoom(e) {
+      var t2 = e.timeStamp
+        , t1 = $(this).data('lastTouch') || t2
+        , dt = t2 - t1
+        , fingers = e.originalEvent.touches.length;
+      $(this).data('lastTouch', t2);
+      if (!dt || dt > 500 || fingers > 1) return;
+
+      e.preventDefault();
+      if (click) {
+        $(this).trigger('click').trigger('click');
+      }
+    });
+  };
+})(jQuery);
+$(".bordered").nodoubletapzoom(true);
+$(".row").nodoubletapzoom(false);
+$(".content").nodoubletapzoom(false);
+$("div").nodoubletapzoom(false);
+$("body").nodoubletapzoom(false);
+</script>
