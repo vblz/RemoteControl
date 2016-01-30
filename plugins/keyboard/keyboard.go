@@ -4,33 +4,21 @@ import (
 	// #include <wtypes.h>
 	// #include <Winuser.h>
 	"C"
-	"io/ioutil"
-	"log"
+	"html/template"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/vblazhnov/RemoteControl/interfaces"
+
+	"github.com/vblazhnov/RemoteControl/utils"
 )
 
 var (
-	pageContent []byte
+	pageContent template.HTML
 )
 
 func init() {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		log.Println("Can't load mouse static file: ", err)
-		return
-	}
-	path := dir + "\\static\\plugins\\keyboard\\index.html"
-	f, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Println("Can't load keyboard static file: ", err)
-		return
-	}
-	pageContent = f
+	pageContent = utils.ReadHTML("\\static\\plugins\\keyboard\\index.html")
 }
 
 // Control allow to remote use mouse
@@ -64,7 +52,7 @@ func contentServeRequest(
 	w http.ResponseWriter,
 	r *http.Request) {
 	if pageContent != nil {
-		w.Write(pageContent)
+		w.Write([]byte(pageContent))
 	} else {
 		http.NotFound(w, r)
 	}

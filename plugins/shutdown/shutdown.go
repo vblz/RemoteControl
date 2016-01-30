@@ -3,14 +3,11 @@ package shutdown
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/vblazhnov/RemoteControl/interfaces"
+	"github.com/vblazhnov/RemoteControl/utils"
 )
 
 var (
@@ -18,18 +15,7 @@ var (
 )
 
 func init() {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		log.Println("Can't load shutdown static file: ", err)
-		return
-	}
-	path := dir + "\\static\\plugins\\shutdown\\index.html"
-	f, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Println("Can't load shutdown static file: ", err)
-		return
-	}
-	pageContent = template.HTML(f)
+	pageContent = utils.ReadHTML("\\static\\plugins\\shutdown\\index.html")
 }
 
 // Control shutdown the local machine
@@ -76,6 +62,17 @@ func apiServeRequest(
 	}
 	process(sec)
 	fmt.Fprint(w, sec)
+}
+
+func contentServeRequest(
+	w http.ResponseWriter,
+	r *http.Request) {
+	buf := []byte(pageContent)
+	if buf != nil {
+		w.Write(buf)
+	} else {
+		http.NotFound(w, r)
+	}
 }
 
 func process(sec int) {
