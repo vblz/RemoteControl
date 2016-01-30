@@ -42,10 +42,6 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 			"/mouse/click",
 			clickServerRequest,
 			interfaces.EndPointAPI},
-		interfaces.BaseEndPointInfo{
-			"/mouse",
-			contentServeRequest,
-			interfaces.EndPointContent},
 	}
 
 	return handlers
@@ -53,15 +49,15 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 
 // GetMainContent implemintation of interfaces.Plugin
 func (c Control) GetMainContent() []interfaces.StaticContent {
-	statics := []interfaces.StaticContent{}
+	statics := []interfaces.StaticContent{
+		interfaces.BaseStaticContent{
+			"/mouse",
+			pageContent,
+			"Mouse",
+		},
+	}
 
 	return statics
-}
-
-func contentServeRequest(
-	w http.ResponseWriter,
-	r *http.Request) {
-	w.Write([]byte(pageContent))
 }
 
 func moveServerRequest(

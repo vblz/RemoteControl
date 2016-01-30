@@ -13,6 +13,7 @@ import (
 	"github.com/vblazhnov/RemoteControl/plugins/keyboard"
 	"github.com/vblazhnov/RemoteControl/plugins/mouse"
 	"github.com/vblazhnov/RemoteControl/plugins/shutdown"
+	"github.com/vblazhnov/RemoteControl/utils"
 )
 
 var (
@@ -63,6 +64,13 @@ func initPlugins() {
 }
 
 func registerPlugins(plugins []interfaces.Plugin) {
+	var err error
+	menus = make(map[template.URL]string, len(plugins))
+	mainTemplate, err = template.New("mainTemplate").Parse(string(utils.ReadHTML("\\static\\template.html")))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	wrapper = auth.NewBaseAuth(auth.Info{user, password, serverAddress})
 	for _, p := range plugins {
 		for _, ep := range p.GetHandlers() {
@@ -75,15 +83,32 @@ func registerPlugins(plugins []interfaces.Plugin) {
 				log.Println("Incorrect plugin endpoint type: ", ep)
 			}
 		}
-
 		for _, static := range p.GetMainContent() {
+			menus[static.Path()] = static.Title()
 			handleStatic(static.Path(), static.Data, static.Title)
 		}
 	}
 }
 
-func handleStatic(path template.URL, data func() template.HTML, title func() string) {
+var (
+	mainTemplate *template.Template
+	menus        map[template.URL]string
+)
 
+func handleStatic(path template.URL, data func() template.HTML, title func() string) {
+	templateInner := struct {
+		Title     string
+		MenuItems map[template.URL]string
+		Content   template.HTML
+	}{
+		title(),
+		menus,
+		data(),
+	}
+	handleFunc := func(w http.ResponseWriter, r *http.Request) {
+		mainTemplate.Execute(w, templateInner)
+	}
+	http.HandleFunc(string(path), wrapper.Wrap(handleFunc))
 }
 
 func handleRequest(path string, fun http.HandlerFunc) {

@@ -1,116 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Keyboard control</title>
+<style scoped>
+  .bordered {
+    border: 3px solid black;
+    border-radius:5%;
+    border-color: rgb(187, 187, 187);
+    color: rgb(110, 110, 110);
+    font-size: 5em;
+  }
+  .space {
+    position: relative;
+    border-top-left-radius:15% 15%;
+    border-top-right-radius:15% 15%;
+    border-bottom-right-radius:15% 15%;
+    border-bottom-left-radius:15% 15%;
+    width: 90%;
+    padding-bottom : 10%; /* = width for a 1:1 aspect ratio */
+    margin:1.66% 5%;
+    overflow:hidden;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .square {
+    float:left;
+    position: relative;
+    width: 30%;
+    padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
+    margin:1.66%;
+    overflow:hidden;
+    vertical-align:middle;
+    text-align: center;
+  }
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <style>
-      .bordered {
-        border: 3px solid black;
-        border-radius:5%;
-        border-color: rgb(187, 187, 187);
-        color: rgb(110, 110, 110);
-        font-size: 5em;
+  .content {
+    position:absolute;
+    height:80%; /* = 100% - 2*10% padding */
+    width:90%; /* = 100% - 2*5% padding */
+    padding: 10% 5%;
+    vertical-align:middle;
+    text-align: center;
+  }
+</style>
+<script>
+function push(key) {
+  $.post(
+      "/api/v1/key",
+      {"key": key},
+      function(data) {
+         console.log('mouse move send success, currentPos: ' + data);
       }
-      .space {
-        position: relative;
-        border-top-left-radius:15% 15%;
-        border-top-right-radius:15% 15%;
-        border-bottom-right-radius:15% 15%;
-        border-bottom-left-radius:15% 15%;
-        width: 90%;
-        padding-bottom : 10%; /* = width for a 1:1 aspect ratio */
-        margin:1.66% 5%;
-        overflow:hidden;
-        text-align: center;
-        vertical-align: middle;
-      }
-      .square {
-        float:left;
-        position: relative;
-        width: 30%;
-        padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
-        margin:1.66%;
-        overflow:hidden;
-        vertical-align:middle;
-        text-align: center;
-      }
+  );
+}
+</script>
 
-      .content {
-        position:absolute;
-        height:80%; /* = 100% - 2*10% padding */
-        width:90%; /* = 100% - 2*5% padding */
-        padding: 10% 5%;
-        vertical-align:middle;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <script>
-    function push(key) {
-      $.post(
-          "/api/v1/key",
-          {"key": key},
-          function(data) {
-             console.log('mouse move send success, currentPos: ' + data);
-          }
-      );
-    }
-    </script>
-    <div class="container theme-showcase" role="main">
-      <div class="jumbotron">
-        <h1>Control your desktop's keyboard</h1>
-        <p>Temp text.</p>
-      </div>
-
-      <div class="page-header">
-        <h1>Use keys</h1>
-      </div>
-      <div class="row">
-        <div class="square bordered" onclick="push(5)">
-          <div class="content">
-              🔉
-          </div>
-        </div>
-        <div class="square bordered" onclick="push(0)">
-          <div class="content">
-            ▲
-          </div>
-        </div>
-        <div class="square bordered" onclick="push(4)">
-          <div class="content">
-            🔊
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="square bordered" onclick="push(2)">
-          <div class="content">
-            ◄
-          </div>
-        </div>
-        <div class="square bordered" onclick="push(1)">
-          <div class="content">
-            ▼
-          </div>
-        </div>
-        <div class="square bordered" onclick="push(3)">
-          <div class="content">
-              ►
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="bordered space" onclick="push(6)">
-        </div>
-      </div>
+<div class="page-header">
+  <h1>Use keys</h1>
+</div>
+<div class="row">
+  <div class="square bordered" onclick="push(5)">
+    <div class="content">
+        🔉
     </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  </body>
-</html>
+  </div>
+  <div class="square bordered" onclick="push(0)">
+    <div class="content">
+      ▲
+    </div>
+  </div>
+  <div class="square bordered" onclick="push(4)">
+    <div class="content">
+      🔊
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="square bordered" onclick="push(2)">
+    <div class="content">
+      ◄
+    </div>
+  </div>
+  <div class="square bordered" onclick="push(1)">
+    <div class="content">
+      ▼
+    </div>
+  </div>
+  <div class="square bordered" onclick="push(3)">
+    <div class="content">
+        ►
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="bordered space" onclick="push(6)">
+  </div>
+</div>

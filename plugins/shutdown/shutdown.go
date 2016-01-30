@@ -29,10 +29,6 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 			"/shutdown",
 			apiServeRequest,
 			interfaces.EndPointAPI},
-		interfaces.BaseEndPointInfo{
-			"/shutdown",
-			contentServeRequest,
-			interfaces.EndPointContent},
 	}
 
 	return handlers
@@ -62,17 +58,6 @@ func apiServeRequest(
 	}
 	process(sec)
 	fmt.Fprint(w, sec)
-}
-
-func contentServeRequest(
-	w http.ResponseWriter,
-	r *http.Request) {
-	buf := []byte(pageContent)
-	if buf != nil {
-		w.Write(buf)
-	} else {
-		http.NotFound(w, r)
-	}
 }
 
 func process(sec int) {

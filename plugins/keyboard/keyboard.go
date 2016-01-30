@@ -32,10 +32,6 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 			"/key",
 			keyServerRequest,
 			interfaces.EndPointAPI},
-		interfaces.BaseEndPointInfo{
-			"/keyboard",
-			contentServeRequest,
-			interfaces.EndPointContent},
 	}
 
 	return handlers
@@ -43,15 +39,15 @@ func (c Control) GetHandlers() []interfaces.EndPointInfo {
 
 // GetMainContent implemintation of interfaces.Plugin
 func (c Control) GetMainContent() []interfaces.StaticContent {
-	statics := []interfaces.StaticContent{}
+	statics := []interfaces.StaticContent{
+		interfaces.BaseStaticContent{
+			"/keyboard",
+			pageContent,
+			"Keyboard",
+		},
+	}
 
 	return statics
-}
-
-func contentServeRequest(
-	w http.ResponseWriter,
-	r *http.Request) {
-	w.Write([]byte(pageContent))
 }
 
 // key type
