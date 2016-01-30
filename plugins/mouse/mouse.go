@@ -61,11 +61,7 @@ func (c Control) GetMainContent() []interfaces.StaticContent {
 func contentServeRequest(
 	w http.ResponseWriter,
 	r *http.Request) {
-	if pageContent != nil {
-		w.Write([]byte(pageContent))
-	} else {
-		http.NotFound(w, r)
-	}
+	w.Write([]byte(pageContent))
 }
 
 func moveServerRequest(
