@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/vblazhnov/go-http-digest-auth"
 
@@ -37,7 +38,10 @@ func init() {
 
 func main() {
 	flag.Parse()
+	wrapper = auth.NewBaseAuth(auth.Info{user, password, serverAddress})
+
 	initPlugins()
+	initResources()
 	startServer()
 }
 
@@ -51,6 +55,39 @@ func startServer() {
 	}
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+var resources map[string][]byte
+
+func initResources() {
+	resources = make(map[string][]byte, 3)
+	appendResources(utils.ReadFilesInDir("static\\css"))
+	appendResources(utils.ReadFilesInDir("static\\js"))
+	handleFilesMap(resources)
+}
+
+func appendResources(new map[string][]byte) {
+	for k, v := range new {
+		k = "/" + strings.Replace(k, "\\", "/", -1)
+		resources[k] = v
+	}
+}
+
+func handleFilesMap(files map[string][]byte) {
+	for k := range files {
+		handleRequest(k, func(w http.ResponseWriter, r *http.Request) {
+			path := r.RequestURI
+			res, ok := resources[path]
+			if !ok {
+				http.NotFound(w, r)
+			} else {
+				if strings.Contains(path, ".css") {
+					w.Header().Add("Content-Type", "text/css")
+				}
+				w.Write(res)
+			}
+		})
 	}
 }
 
@@ -70,8 +107,6 @@ func registerPlugins(plugins []interfaces.Plugin) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	wrapper = auth.NewBaseAuth(auth.Info{user, password, serverAddress})
 	for _, p := range plugins {
 		for _, ep := range p.GetHandlers() {
 			switch ep.Type() {
