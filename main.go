@@ -103,6 +103,7 @@ func initPlugins() {
 func registerPlugins(plugins []interfaces.Plugin) {
 	var err error
 	menus = make(map[template.URL]string, len(plugins))
+	allPluginsData = make([]func() template.HTML, 0)
 	mainTemplate, err = template.New("mainTemplate").Parse(string(utils.ReadHTML("\\static\\template.html")))
 	if err != nil {
 		log.Fatal(err)
@@ -120,14 +121,26 @@ func registerPlugins(plugins []interfaces.Plugin) {
 		}
 		for _, static := range p.GetMainContent() {
 			menus[static.Path()] = static.Title()
+			allPluginsData = append(allPluginsData, static.Data)
 			handleStatic(static.Path(), static.Data, static.Title)
 		}
 	}
+
+	mainPageData := func() template.HTML {
+		html := template.HTML("")
+		for _, v := range allPluginsData {
+			html += v()
+		}
+		return html
+	}
+
+	handleStatic("/", mainPageData, func() string { return "Remote Control" })
 }
 
 var (
-	mainTemplate *template.Template
-	menus        map[template.URL]string
+	mainTemplate   *template.Template
+	menus          map[template.URL]string
+	allPluginsData []func() template.HTML
 )
 
 func handleStatic(path template.URL, data func() template.HTML, title func() string) {
