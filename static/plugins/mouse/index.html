@@ -18,6 +18,15 @@ function mClick(type) {
   );
 }
 </script>
+<style scoped>
+  #touchpad {
+    max-width: 300px;
+    min-height: 300px;
+  }
+  .pushed {
+    background-color: #A9A9A9;
+  }
+</style>
 <div class="page-header">
   <h1>Move mouse</h1>
 </div>
@@ -31,3 +40,60 @@ function mClick(type) {
   <button type="button" class="btn btn-lg btn-default" onclick="mClick(0)">Left button</button>
   <button type="button" class="btn btn-lg btn-default" onclick="mClick(1)">Right button</button>
 </p>
+<div class="jumbotron" id="touchpad"></div>
+<script>
+  var touchpad = document.getElementById('touchpad'),
+      $touchpad = $(touchpad);
+
+  var startX = 0, startY = 0, prevX = 0, prevY = 0;
+
+  var tsHdl = function(e) {
+    var touch = e.changedTouches[0];
+    startX = parseInt(touch.clientX);
+    startY = parseInt(touch.clientY);
+
+    prevX = startX;
+    prevY = startY;
+
+    $touchpad.addClass('pushed');
+
+    event.preventDefault();
+  };
+
+  var tmHdl = function(e) {
+    var touch = e.changedTouches[0],
+        distX = parseInt(touch.clientX) - prevX,
+        distY = parseInt(touch.clientY) - prevY;
+    
+    move(distX, distY);
+
+    prevX = touch.clientX;
+    prevY = touch.clientY;
+  };
+
+  var clickTimer = null;
+  var teHdl = function(e) {
+    var touch = e.changedTouches[0],
+        absdistX = parseInt(touch.clientX) - startX;
+        absdistY = parseInt(touch.clientY) - startY;
+    if (absdistX == 0 && absdistY == 0) {
+      // click or dblclick?
+      if (clickTimer == null) {
+        clickTimer = setTimeout(function() {
+          clickTimer = null;
+          mClick(0);
+        }, 200);
+      } else {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        mClick(1);
+      }
+    }
+
+    $touchpad.removeClass('pushed');
+  };
+
+  touchpad.addEventListener('touchstart', tsHdl, false);
+  touchpad.addEventListener('touchmove', tmHdl, false);
+  touchpad.addEventListener('touchend', teHdl, false);
+</script>
